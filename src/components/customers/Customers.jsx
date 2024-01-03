@@ -50,11 +50,11 @@ const Customers = () => {
         }
 
         try {
-            const response = await axios.post('http://www.dev.kohanco.com/api/Admin/CreateEmployerLogosImages', formDataToSend,
+            const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/Admin/CreateEmployerLogosImages`, formDataToSend,
                 {
                     headers: {
-                        'Username': 'KohanAdminUser',
-                        'Password': 'tyYUNM@8@#12az',
+                        'Username': process.env.REACT_APP_API_USERNAME,
+                        'Password': process.env.REACT_APP_API_PASSWORD,
                         "Content-Type": "multipart/form-data",
                     }
                 });
@@ -71,7 +71,7 @@ const Customers = () => {
     };
 
     const getImages = async () => {
-        axios.get('http://www.dev.kohanco.com/api/Home/GetEmployersLogo').then(
+        axios.get(`${process.env.REACT_APP_BASE_URL}/Api/Home/GetEmployersLogo`).then(
             (res) => {
                 setImages(JSON.parse(res.data))
             }
@@ -87,10 +87,10 @@ const Customers = () => {
 
     const onDelete = async (url) => {
         try {
-            const res = await axios.delete(`http://www.dev.kohanco.com/api/Admin/DeleteEmployersLogo?fileNameUrl=${url}`,{
+            const res = await axios.delete(`${process.env.REACT_APP_BASE_URL}/api/Admin/DeleteEmployersLogo?fileNameUrl=${url}`,{
                 headers: {
-                    'Username': 'KohanAdminUser',
-                    'Password': 'tyYUNM@8@#12az',
+                    'Username': process.env.REACT_APP_API_USERNAME,
+                    'Password': process.env.REACT_APP_API_PASSWORD,
                 },
             })
             toast.success("deleted successfully")

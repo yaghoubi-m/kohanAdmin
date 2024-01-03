@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import config from "bootstrap/js/src/util/config";
 import html2canvas from 'html2canvas';
 import {ClipLoader} from 'react-spinners';
-import Header from "../Header";
+import MyHeader from "../MyHeader";
 import DropZone from "../DropZone";
 import DisplayImage from "../DisplayImage";
 import SubmitBtn from "../SubmitBtn";
@@ -29,7 +29,7 @@ const HeaderImg = () => {
     return (
         <div className="position-relative">
             <Home />
-            <AboutUs/>
+            <AboutUs />
             <ContactUs />
             <Project/>
             <DetailProject />

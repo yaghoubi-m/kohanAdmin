@@ -49,11 +49,11 @@ const SampleProject = () => {
         }
 
         try {
-            const response = await axios.post('http://www.dev.kohanco.com/api/Admin/CreateSampleProjectImages', formDataToSend,
+            const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/Admin/CreateSampleProjectImages`, formDataToSend,
                 {
                     headers: {
-                        'Username': 'KohanAdminUser',
-                        'Password': 'tyYUNM@8@#12az',
+                        'Username': process.env.REACT_APP_API_USERNAME,
+                        'Password': process.env.REACT_APP_API_PASSWORD,
                         "Content-Type": "multipart/form-data",
                     }
                 });
@@ -70,7 +70,7 @@ const SampleProject = () => {
     };
 
     const getImages = async () => {
-        axios.get('http://www.dev.kohanco.com/api/Home/GetSampleProjectImg').then(
+        axios.get(`${process.env.REACT_APP_BASE_URL}/api/Home/GetSampleProjectImg`).then(
             (res) => {
                 setImages(JSON.parse(res.data))
             }
@@ -86,10 +86,10 @@ const SampleProject = () => {
 
     const onDelete = async (url) => {
         try {
-            const res = await axios.delete(`http://www.dev.kohanco.com/api/Admin/DeleteSampleProjects?fileNameUrl=${url}`,{
+            const res = await axios.delete(`${process.env.REACT_APP_BASE_URL}/api/Admin/DeleteSampleProjects?fileNameUrl=${url}`,{
                 headers: {
-                    'Username': 'KohanAdminUser',
-                    'Password': 'tyYUNM@8@#12az',
+                    'Username': process.env.REACT_APP_API_USERNAME,
+                    'Password': process.env.REACT_APP_API_PASSWORD,
                 },
             })
             toast.success("deleted successfully")
@@ -118,7 +118,8 @@ const SampleProject = () => {
                                     <div>
                                         <img style={{
                                             width: "200px",
-                                            height: "100px"
+                                            height: "100px",
+                                            objectFit: "contain"
                                         }} src={image} alt="img"/>
                                     </div>
                                     <Button variant="danger" onClick={()=> onDelete(image)} >Delete</Button>

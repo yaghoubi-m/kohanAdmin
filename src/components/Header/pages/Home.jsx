@@ -32,10 +32,10 @@ export default function Home(){
                 const axiosConfig = {
                     method: 'post',
                     maxBodyLength: Infinity,
-                    url: `http://www.dev.kohanco.com${endPoint}`,
+                    url: `${process.env.REACT_APP_BASE_URL}${endPoint}`,
                     headers: {
-                        'Username': 'KohanAdminUser',
-                        'Password': 'tyYUNM@8@#12az',
+                        'Username': process.env.REACT_APP_API_USERNAME,
+                        'Password': process.env.REACT_APP_API_PASSWORD,
                         "Content-Type": "multipart/form-data",
                     },
                     data: formData
@@ -58,7 +58,8 @@ export default function Home(){
         }
     };
     const onLoadImgUrl = async (endPoint) => {
-        const response = await axios.get(`http://www.dev.kohanco.com${endPoint}`)
+        console.log(`${process.env.REACT_APP_BASE_URL}${endPoint}`)
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}${endPoint}`)
         setImgUrl(response.data.slice(1, -1))
         // console.log(imgUrl)
     }

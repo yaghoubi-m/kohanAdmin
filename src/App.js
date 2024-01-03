@@ -3,27 +3,30 @@ import React from 'react';
 import HeaderImg from './components/Header/HeaderImg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Route, Router, Routes} from "react-router-dom";
-import Header from "./components/Header";
+import MyHeader from "./components/MyHeader";
 import Customers from "./components/customers/Customers";
 import Home from "./components/Home/Home";
 import Projects from "./components/projects/Projects";
 import SampleProject from "./components/sampleProjects/SampleProjects";
+import Image360 from "./components/360Image/Image360";
+import ShowOffImages from "./components/showOffImages/ShowOffImages";
 
 
 function App() {
-    return (
-        <>
-            <Header  title="Home"/>
-            <Routes>
-                <Route index element={<Home/>}/>
-                <Route path="headerImg" element={<HeaderImg/>}/>
-                <Route path="Customers" element={<Customers/>}/>
-                <Route path="Projects" element={<Projects/>}/>
-                <Route path="sampleProjects" element={<SampleProject />} />
-            </Routes>
-        </>
-
-    );
+  return (
+      <>
+        <MyHeader title="Home"/>
+        <Routes>
+          <Route index element={<Home/>}/>
+          <Route path="headerImg" element={<HeaderImg/>}/>
+          <Route path="Customers" element={<Customers/>}/>
+          <Route path="Projects" element={<Projects/>}/>
+          <Route path="sampleProjects" element={<SampleProject/>}/>
+          <Route path="360" element={<Image360/>}/>
+          <Route path="showOff" element={<ShowOffImages/>}/>
+        </Routes>
+      </>
+  );
 }
 
 export default App;
