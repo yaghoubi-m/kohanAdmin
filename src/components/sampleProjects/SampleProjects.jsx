@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {Form, Button, Container, Col, Row} from 'react-bootstrap';
 import axios from 'axios';
 import {toast, ToastContainer} from "react-toastify";
+import Spinner from "../Spinner";
 
 const SampleProject = () => {
     const [formData, setFormData] = useState({
@@ -10,7 +11,7 @@ const SampleProject = () => {
     });
     const [de,seDe] = useState(false)
     const [images, setImages] = useState([])
-
+    const [loading,setLoading] = useState(false)
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormData((prevData) => ({
@@ -40,7 +41,7 @@ const SampleProject = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setLoading(p=> !p)
         const formDataToSend = new FormData();
         for (const key in formData) {
             formData[key].forEach((image, index) => {
@@ -59,13 +60,14 @@ const SampleProject = () => {
                 });
             console.log('Data submitted successfully:', response.data);
             toast.success('added success fully')
-            seDe(p=> !p)
 
             // Add any additional logic or UI updates here
         } catch (error) {
             console.error('Error submitting data:', error);
             toast.error('error')
             // Handle error and display an appropriate message
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -94,12 +96,13 @@ const SampleProject = () => {
             })
             toast.success("deleted successfully")
             console.log("fileNameUrl",res)
-            seDe( p => !p )
 
         }catch (e) {
             toast.error("err")
             console.log("fileNameUrl",e)
 
+        }finally {
+            setLoading()
         }
     }
     return (
@@ -152,9 +155,12 @@ const SampleProject = () => {
                             <Form.Text className="text-muted">Select one or more images (if applicable).</Form.Text>
                         </Form.Group>
 
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
+                        <div className="d-flex justify-content-between">
+                            <Button className="w-75" variant="primary" type="submit">
+                                Submit
+                            </Button>
+                            <Spinner loading={loading} />
+                        </div>
                     </Form>
                 </Col>
             </Row>

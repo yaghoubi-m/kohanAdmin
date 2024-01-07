@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import axios from "axios";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 import DisplayImage from "../DisplayImage";
 import SubmitBtn from "../SubmitBtn";
 import Spinner from "../Spinner";
@@ -73,6 +73,7 @@ export default function Image360(){
             uploadedImage={uploadedImage}/>
         <SubmitBtn url='/api/Admin/CreateHomePageHeaderImage' handleImageSubmit={handleImageSubmit}/>
         <Spinner loading={loading}/>
+        <ToastContainer />
       </div>
   )
 }

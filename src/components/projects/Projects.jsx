@@ -5,14 +5,16 @@ import axios from 'axios';
 import {toast, ToastContainer} from "react-toastify";
 import ProjectsUi from "./ProjectsUi";
 import ModalProjects from "./ModalProjects";
+import AddProject from "./AddProject";
 
 const Projects = () => {
   const [refresh, setRefresh] = useState(false)
   const [showModal, setShowModal] = useState(false);
-
+  const [loading, setLoading] = useState(false)
+  console.log(loading)
   // Modal
   const handleToggleModal = () => {
-    setShowModal(p=> !p);
+    setShowModal(p => !p);
   };
   //
 
@@ -23,6 +25,7 @@ const Projects = () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/api/Project/CompleteProjectsList`)
       setProjects(response.data)
+      console.log(response.data)
     } catch (e) {
       console.log(e)
     }
@@ -77,13 +80,14 @@ const Projects = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData)
+    setLoading(true)
+    // console.log(formData)
     const formDataToSend = new FormData();
 
     for (const key in formData) {
       // console.log(formData[key] , key)
       if (key === 'thumbnailPictures') {
-        console.log('sss', formData[key], key)
+        // console.log('sss', formData[key], key)
         formDataToSend.append('ThumbnailPicture', formData[key]);
       } else if (key === 'PicturesUrls' && Array.isArray(formData[key])) {
         formData[key].forEach((image, index) => {
@@ -128,6 +132,8 @@ const Projects = () => {
       console.error('Error submitting data:', error);
       toast.error("error")
       // Handle error and display appropriate message
+    } finally {
+      setLoading(false)
     }
   };
   //
@@ -218,8 +224,9 @@ const Projects = () => {
   const handleSubmitEdit = async (e, id) => {
 
     e.preventDefault();
-    console.log('id',id)
-    console.log('Edit', formDataEdit)
+    // console.log('id', id)
+    setLoading(true)
+    // console.log('Edit', formDataEdit)
     const formDataToSend = new FormData();
 
     for (const key in formDataEdit) {
@@ -248,7 +255,7 @@ const Projects = () => {
         formDataToSend.append('ProjectDetail.OperationDate', formDataEdit[key]);
       }
     }
-    console.log('Edit sent',formDataToSend)
+    console.log('Edit sent', formDataToSend)
 
     try {
       const axiosConfig = {
@@ -265,15 +272,32 @@ const Projects = () => {
       const response = await axios(axiosConfig)
       console.log('Data submitted successfully:', response.data);
       toast.success("success")
+      setRefresh(p=> !p)
+
       // Add any additional logic or UI updates here
     } catch (error) {
       console.error('Error submitting data:', error);
       toast.error("error")
       // Handle error and display appropriate message
+    } finally {
+      setLoading(false)
     }
   };
   //
 
+  // ==> Confirm Review
+  const confirmReview = async (id, review) => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/Admin/ChangeReviewStateToConfirm?stateId=
+      ${review}&reviewId=${id}`)
+      toast.success('success')
+      setRefresh(p => !p)
+    } catch (e) {
+      toast.error('err')
+      console.log(e)
+    }
+  }
+  //
 
   useEffect(() => {
     fetchProjects()
@@ -290,6 +314,7 @@ const Projects = () => {
                     handleToggleModal={handleToggleModal}
                     onEdit={onEdit}
                     onDelete={onDelete}
+                    onConfirm={confirmReview}
                     projects={projects}/>
               </Row>
             </Accordion.Body>
@@ -297,101 +322,15 @@ const Projects = () => {
           <Accordion.Item eventKey={2}>
             <Accordion.Header>Create new project</Accordion.Header>
             <Accordion.Body>
-              <Row className="justify-content-md-center mt-5 mb-5">
-                <Col md={6}>
-                  <Form className="d-flex flex-column gap-2" onSubmit={handleSubmit}>
-                    <Form.Group controlId="title">
-                      <Form.Label>Title</Form.Label>
-                      <Form.Control type="text" name="title" value={formData.title} onChange={handleChange} required/>
-                    </Form.Group>
-
-                    <Form.Group controlId="employerTitle">
-                      <Form.Label>Employer Title</Form.Label>
-                      <Form.Control type="text" name="employerTitle" value={formData.employerTitle}
-                                    onChange={handleChange}
-                                    required/>
-                    </Form.Group>
-
-                    <Form.Group controlId="materialDescription">
-                      <Form.Label>Material Description</Form.Label>
-                      <Form.Control type="text" name="materialDescription" value={formData.materialDescription}
-                                    onChange={handleChange} required/>
-                    </Form.Group>
-
-                    <Form.Group controlId="meterage">
-                      <Form.Label>Meterage</Form.Label>
-                      <Form.Control type="text" name="meterage" value={formData.meterage} onChange={handleChange}
-                                    required/>
-                    </Form.Group>
-
-                    <Form.Group controlId="operationPlace">
-                      <Form.Label>Operation Place</Form.Label>
-                      <Form.Control type="text" name="operationPlace" value={formData.operationPlace}
-                                    onChange={handleChange}
-                                    required/>
-                    </Form.Group>
-
-                    <Form.Group controlId="operationDate">
-                      <Form.Label>Operation Date</Form.Label>
-                      <Form.Control type="date" name="operationDate" value={formData.operationDate}
-                                    onChange={handleChange}
-                                    required/>
-                    </Form.Group>
-
-                    <Form.Group controlId="exhibition">
-                      <Form.Label>Exhibition</Form.Label>
-                      <Form.Control as="select" name="exhibition" value={formData.exhibition} onChange={handleChange}
-                                    required>
-                        <option value="" disabled>Select Exhibition Type</option>
-                        <option value={0}>Indoor</option>
-                        <option value={1}>Outdoor</option>
-                        <option value={2}>Company</option>
-                      </Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId="PicturesUrls">
-                      <Form.Label>Images</Form.Label>
-
-                      {formData.PicturesUrls.map((image, index) => (
-                          <div key={index} className="mb-2">
-                            <img src={URL.createObjectURL(image)} alt={`Image ${index}`}
-                                 style={{width: '50px', marginRight: '10px'}}/>
-                            <Button variant="danger" size="sm" onClick={() => handleRemoveImage(index)}>
-                              Remove
-                            </Button>
-                          </div>
-                      ))}
-
-                      <Form.Control type="file" name="PicturesUrls" accept="image/*" onChange={handleFileChange}
-                                    multiple/>
-                      <Form.Text className="text-muted">Select one or more images (if applicable).</Form.Text>
-                    </Form.Group>
-                    <Form.Group controlId="thumbnailPicture">
-                      <Form.Label>Thumbnail Picture</Form.Label>
-
-                      {formData.thumbnailPictures && (
-                          <div className="mb-2">
-                            <img
-                                src={URL.createObjectURL(formData.thumbnailPictures)}
-                                alt="Thumbnail"
-                                style={{width: '50px', marginRight: '10px'}}
-                            />
-                            <Button variant="danger" size="sm" onClick={handleRemoveImage}>
-                              Remove
-                            </Button>
-                          </div>
-                      )}
-
-                      <Form.Control type="file" name="thumbnailPicture" accept="image/*"
-                                    onChange={(e) => t(e, 'thumbnailPicture')}/>
-
-                      <Form.Text className="text-muted">Select a thumbnail picture (if applicable).</Form.Text>
-                    </Form.Group>
-                    <Button variant="primary" type="submit">
-                      Submit
-                    </Button>
-                  </Form>
-                </Col>
-              </Row>
+              <AddProject
+                  formData={formData}
+                  t={t}
+                  handleSubmit={handleSubmit}
+                  handleChange={handleChange}
+                  handleRemoveImage={handleRemoveImage}
+                  handleFileChange={handleFileChange}
+                  loading={loading}
+              />
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
@@ -405,6 +344,7 @@ const Projects = () => {
             handleChangeEdit={handleChangeEdit}
             handleFileChangeEdit={handleFileChangeEdit}
             handleRemoveImageEdit={handleRemoveImageEdit}
+            loading={loading}
         />
         <ToastContainer/>
       </Container>

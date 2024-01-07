@@ -1,6 +1,7 @@
 import {Button, Col, Form, Row} from "react-bootstrap";
 import React from "react";
 import MyModal from "../MyModal";
+import Spinner from "../Spinner";
 
 export default function ModalProjects({
                                         show,
@@ -11,7 +12,8 @@ export default function ModalProjects({
                                         handleRemoveImageEdit,
                                         handleFileChangeEdit,
                                         tEdit,
-                                        id
+                                        id,
+                                        loading
                                       }) {
   // console.log(id)
   return (
@@ -103,9 +105,12 @@ export default function ModalProjects({
 
                 <Form.Text className="text-muted">Select a thumbnail picture (if applicable).</Form.Text>
               </Form.Group>
-              <Button variant="primary" type="submit">
-                Submit
-              </Button>
+             <div className="d-flex justify-content-between">
+               <Button className="w-75" variant="primary" type="submit">
+                 Submit
+               </Button>
+               <Spinner loading={loading} />
+             </div>
             </Form>
           </Col>
         </Row>

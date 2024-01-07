@@ -1,9 +1,10 @@
 import {Accordion, Button, Card} from "react-bootstrap";
 import DeleteProject from "./DeleteProject";
-import React from "react";
+import React, {Fragment} from "react";
 import EditProject from "./EditProject";
+import Spinner from "../Spinner";
 
-export default function ProjectsUi({projects, onDelete, handleToggleModal, onEdit}) {
+export default function ProjectsUi({projects, onDelete, handleToggleModal, onEdit, onConfirm}) {
 
   return (
       <>
@@ -15,26 +16,41 @@ export default function ProjectsUi({projects, onDelete, handleToggleModal, onEdi
                 </Accordion.Header>
                 <Accordion.Body>
                   <Card.Body>
-                    <p><strong>Id:</strong> {data.Id}</p>
                     <p><strong>Title:</strong> {data.Title}</p>
+                    <p><strong>EmployerTitle:</strong> {data.ProjectDetail.EmployerTitle}</p>
                     <p><strong>Material Description:</strong> {data.ProjectDetail.MaterialDescription}</p>
                     <p><strong>Meterage:</strong> {data.ProjectDetail.Meterage}</p>
                     <p><strong>Operation Date:</strong> {data.ProjectDetail.OperationDate}</p>
                     <p><strong>Operation Place:</strong> {data.ProjectDetail.OperationPlace}</p>
-                    <p><strong>Pictures Base URL:</strong> {data.ProjectDetail.PicturesBaseUrl}</p>
                     <p>
-                      <strong>Thumbnail:</strong>
+                      <strong>Thumbnail : </strong>
                       <img style={{
                         width: '200px',
                         height: '100px',
-                      }} src={data.ThumbnailPicture.slice(1,-1)} alt={'thumbnail'}/>
+                      }} src={data.ThumbnailPicture?.slice(1, -1)} alt={'thumbnail'}/>
                     </p>
+                    <div>
+                      <strong>Pictures :</strong>
+                      <div className="d-flex flex-wrap">
+                        {JSON.parse(data.ProjectDetail.PicturesBaseUrls)
+                            ?.map((img, index) => (
+                                <Fragment key={index}>
+                                  <img
+                                      className="m-1"
+                                      style={{
+                                    width: '200px',
+                                    height: '100px',
+                                  }} src={img} alt={'img'}/>
+                                </Fragment>
+                            ))}
+                      </div>
+                    </div>
                     <p><strong>Review:</strong></p>
-                    <Accordion>
-                      {data.ProjectDetail.Review &&
-                          data.ProjectDetail.Review.map((review) => (
-                              <Accordion.Item key={review.Id} eventKey={review.Id}>
-                                <Accordion.Header className="bg-dark text-dark">
+                    {data.ProjectDetail.Review &&
+                        data.ProjectDetail.Review.map((review) => (
+                            <Accordion key={review.Id}>
+                              <Accordion.Item className='mt-5' eventKey={review.Id}>
+                                <Accordion.Header className="">
                                   <p className='mx-2'>{review.Id}</p>
                                 </Accordion.Header>
                                 <Accordion.Body>
@@ -51,11 +67,18 @@ export default function ProjectsUi({projects, onDelete, handleToggleModal, onEdi
                                     <p>
                                       <strong>Message: </strong>{review.Message}
                                     </p>
+                                    <p>
+                                      <strong>State: </strong>{review.State === 0 ? 'Confirmed' : 'pending'}
+                                    </p>
+                                    <div className="d-flex justify-content-between">
+                                      <Button onClick={()=> onConfirm(review.Id, 0)} variant="warning">Confirm</Button>
+                                      <Button onClick={()=> onConfirm(review.Id, 1)} variant="warning">cancel</Button>
+                                    </div>
                                   </div>
                                 </Accordion.Body>
                               </Accordion.Item>
-                          ))}
-                    </Accordion>
+                            </Accordion>
+                        ))}
                   </Card.Body>
                   <div className="d-flex justify-content-between">
                     <DeleteProject onDelete={onDelete} id={data.Id}/>

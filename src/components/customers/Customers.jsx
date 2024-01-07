@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {toast, ToastContainer} from "react-toastify";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import Spinner from "../Spinner";
 
 
 
@@ -11,6 +12,7 @@ const Customers = () => {
     });
     const [de,seDe] = useState(false)
     const [images, setImages] = useState([])
+    const [loading,setLoading] = useState(false)
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -48,7 +50,7 @@ const Customers = () => {
                 formDataToSend.append(`${key}`, image);
             });
         }
-
+        setLoading(true)
         try {
             const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/Admin/CreateEmployerLogosImages`, formDataToSend,
                 {
@@ -67,6 +69,8 @@ const Customers = () => {
             console.error('Error submitting data:', error);
             toast.error('error')
             // Handle error and display an appropriate message
+        }finally {
+            setLoading(false)
         }
     };
 
@@ -152,9 +156,12 @@ const Customers = () => {
                             <Form.Text className="text-muted">Select one or more images (if applicable).</Form.Text>
                         </Form.Group>
 
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
+                        <div className="d-flex justify-content-between">
+                            <Button className="w-75" variant="primary" type="submit">
+                                Submit
+                            </Button>
+                            <Spinner loading={loading} />
+                        </div>
                     </Form>
                 </Col>
             </Row>

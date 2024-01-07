@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /*padding-top: 20px;*/
 }
 
 code {
@@ -18,4 +19,11 @@ code {
 
 a:visited{
   color: white;
+}
+.nav-item > a {
+  color: #ffffff;
+
+}
+.nav-item > a:hover {
+  color: #fff;
 }
