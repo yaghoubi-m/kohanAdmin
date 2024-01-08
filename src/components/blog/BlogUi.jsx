@@ -10,11 +10,17 @@ export default function BlogUi({apiData, handleDelete, onEdit, handleToggleModal
                 <Card.Img height={200} variant="top" src={data.ThumbPicture?.slice(1, -1)}/>
                 <Card.Body>
                   <Card.Title>{data.Title}</Card.Title>
-                  <Card.Text>{data.Body}</Card.Text>
+                  <Card.Text style={{
+                    height: '50px',
+                    overflow: 'clip'
+                  }}>{data.Body}</Card.Text>
                   {data.Headers.slice(0,1).map(item => (
                           <div key={item.Id}>
                             <div><strong>header 1:</strong> {item.Title}</div>
-                            <div><strong>content 1:</strong> {item.Content}</div>
+                            <div style={{
+                              height: '50px',
+                              overflow: 'clip'
+                            }}><strong>content 1:</strong> {item.Content}</div>
                           </div>
                       )
                   )}
