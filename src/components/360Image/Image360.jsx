@@ -28,7 +28,8 @@ export default function Image360(){
         setLoading(true)
         const formData = new FormData()
         const format = postFile.name.split('.').pop()
-        formData.append("file", postFile, `home.${format}`);
+        console.log(postFile)
+        formData.append("files", postFile, `img360.${format}`);
         const axiosConfig = {
           method: 'post',
           maxBodyLength: Infinity,
@@ -41,7 +42,8 @@ export default function Image360(){
           data: formData
         };
         const response = await axios(axiosConfig)
-        if (response.status === 200) {
+        console.log(response.statusCode || response.status)
+        if (response.statusCode === 200 || response.status) {
           toast.success('Image uploaded successfully');
           console.log('Image uploaded successfully:', response.data);
         } else {
@@ -60,18 +62,18 @@ export default function Image360(){
   const onLoadImgUrl = async (endPoint) => {
     console.log(`${process.env.REACT_APP_BASE_URL}${endPoint}`)
     const response = await axios.get(`${process.env.REACT_APP_BASE_URL}${endPoint}`)
-    setImgUrl(response.data.slice(1, -1))
-    // console.log(imgUrl)
+    setImgUrl(response.data)
+    console.log(imgUrl)
   }
   return(
       <div className='d-flex justify-content-center align-items-center gap-4 mt-5'>
         <DropZone title="home image" onDrop={handleImageUpload}/>
         <DisplayImage
-            url='/api/Home/GetHomePageMainHeader'
+            url='/api/Home/GetHeader360'
             onLoadUrl={onLoadImgUrl}
-            imgUrl={imgUrl}
+            imgUrl={imgUrl[0]}
             uploadedImage={uploadedImage}/>
-        <SubmitBtn url='/api/Admin/CreateHomePageHeaderImage' handleImageSubmit={handleImageSubmit}/>
+        <SubmitBtn url='/api/Home/GetHeader360' handleImageSubmit={handleImageSubmit}/>
         <Spinner loading={loading}/>
         <ToastContainer />
       </div>
